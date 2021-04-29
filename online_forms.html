@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OnlineForms</title>
+    <meta charset="UTF-8">
+    
+    <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+
+<div class="tabs">
+    <button type="button" name="administration" id="b_administration" onclick="shuffleTabs('c_administration')">Administration</button>
+    <button type="button" name="forms" id="b_forms" onclick="shuffleTabs('c_forms')">Forms</button>
+</div>
+
+<br>
+
+<div class="tab_content" id="c_administration">
+    <div>
+        <input type="text" id="a_search_field"/>
+        <button type="button" id="a_search_button" onclick="searchForms('a_search_field', 'form_creation')">Search</button>
+    </div> 
+
+    <br>
+    
+    <div id="form_creation" onchange="addRadioButtonOptionsCreation(event)" onclick="addNewFormElement(event, 'form_creation')">
+
+    </div>
+</div>
+
+<div class="tab_content" id="c_forms" style="display: none;">
+    <div>
+        <label for="f_search_field">From name:</label> <input type="text" id="f_search_field" />
+        <label for="f_version_field">Version:</label> <input type="text" id="f_version_field" />
+        <button type="button" id="f_search_button">Search</button>
+    </div>    
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
