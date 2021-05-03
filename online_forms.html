@@ -6,7 +6,7 @@
     
     <link href="style.css" rel="stylesheet" />
 </head>
-<body>
+<body onload="setDB()">
 
 <div class="tabs">
     <button type="button" name="administration" id="b_administration" onclick="shuffleTabs('c_administration')">Administration</button>
@@ -18,14 +18,16 @@
 <div class="tab_content" id="c_administration">
     <div>
         <input type="text" id="a_search_field"/>
-        <button type="button" id="a_search_button" onclick="searchForms('a_search_field', 'form_creation')">Search</button>
+        <button type="button" id="a_search_button" onclick="searchForms('a_search_field', 'form_creation', 'submit_form_creation')">Search</button>
     </div> 
 
     <br>
-    
-    <div id="form_creation" onchange="addRadioButtonOptionsCreation(event)" onclick="addNewFormElement(event, 'form_creation')">
 
-    </div>
+    <form id="form_creation" onsubmit="validateAndSaveForm(event, 'a_search_field')" onchange="addRadioButtonOptionsCreation(event)" onclick="addNewFormElement(event, 'form_creation')" >
+       
+    </form>
+
+    <button type="submit" id="submit_form_creation" style="display: none;" form="form_creation">Save</button>
 </div>
 
 <div class="tab_content" id="c_forms" style="display: none;">
