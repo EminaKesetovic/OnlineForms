@@ -9,8 +9,8 @@
 <body onload="setDB()">
 
 <div class="tabs">
-    <button type="button" name="administration" id="b_administration" onclick="shuffleTabs('c_administration')">Administration</button>
-    <button type="button" name="forms" id="b_forms" onclick="shuffleTabs('c_forms')">Forms</button>
+    <button type="button" name="administration" id="b_administration" onclick="shuffleTabs('c_administration', 'tab_content')">Administration</button>
+    <button type="button" name="forms" id="b_forms" onclick="shuffleTabs('c_forms', 'tab_content')">Forms</button>
 </div>
 
 <br>
@@ -18,27 +18,37 @@
 <div class="tab_content" id="c_administration">
     <div>
         <input type="text" id="a_search_field"/>
-        <button type="button" id="a_search_button" onclick="searchForms('a_search_field', 'form_creation', 'submit_form_creation')">Search</button>
+        <button type="button" id="a_search_button" onclick="adminSearchForms('a_search_field', 'admin_form_creation', 'submit_admin_form_creation')">Search</button>
     </div> 
 
     <br>
 
-    <form id="form_creation" onsubmit="validateAndSaveForm(event, 'a_search_field')" onchange="addRadioButtonOptionsCreation(event)" onclick="addNewFormElement(event, 'form_creation')" >
+    <form id="admin_form_creation" onsubmit="validateAndSaveAdminForm(event, 'a_search_field')" onchange="addRadioButtonOptionsCreation(event)" onclick="addNewFormElement(event, 'admin_form_creation')" >
        
     </form>
 
-    <button type="submit" id="submit_form_creation" style="display: none;" form="form_creation">Save</button>
+    <button type="submit" id="submit_admin_form_creation" style="display: none;" form="admin_form_creation">Save</button>
 </div>
 
 <div class="tab_content" id="c_forms" style="display: none;">
     <div>
         <label for="f_search_field">From name:</label> <input type="text" id="f_search_field" />
-        <label for="f_version_field">Version:</label> <input type="text" id="f_version_field" />
-        <button type="button" id="f_search_button">Search</button>
-    </div>    
+        <label for="f_version_field">Version:</label> <input type="number" id="f_version_field" />
+        <button type="button" id="f_search_button" onclick="formSearchForms('f_search_field', 'forms_form_creation', 'submit_forms_form_creation')">Search</button>
+    </div>
+
+    <br>
+
+    <form id="forms_form_creation" onsubmit="validateAndSaveFromsForm(event, 'f_search_field', 'f_version_field')">
+       
+    </form>
+
+    <button type="submit" id="submit_forms_form_creation" style="display: none;" form="forms_form_creation">Save</button>
 </div>
 
-
+<script src="constants.js"></script>
+<script src="db_stuff.js"></script>
+<script src="elements_creator.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
