@@ -1,5 +1,5 @@
 /**
-* Check if database exists, and if not, create the database together with tables
+* Check if database exists, and if not, create the database together with stores
 */
 function setDB() {
 
@@ -16,8 +16,8 @@ function setDB() {
 		console.log("Created new database");
 		const db = event.target.result;		
 				
-		// check if there is a table with given name
-		// if not, add table (and index)
+		// check if there is a store with given name
+		// if not, add store (and index)
 		if (!db.objectStoreNames.contains(FORMS_TABLE)) {
 			objectStore = db.createObjectStore(FORMS_TABLE, { autoIncrement: true, keyPath: FORMS_TABLE_KEY});
 		};
@@ -72,7 +72,7 @@ function saveAdministrationForm(formName, formElements, elementOptions) {
 		console.log("Successfully opened the database"); 
 		const db = e.target.result;
 		
-        //Open transaction for inserting data into tables
+        //Open transaction for inserting data into stores
 		const transaction = db.transaction([FORMS_TABLE, ELEMENTS_TABLE, ELEMENT_OPTIONS_TABLE], 'readwrite');
 
 		const formsStore = transaction.objectStore(FORMS_TABLE);
@@ -115,6 +115,20 @@ function saveAdministrationForm(formName, formElements, elementOptions) {
 	}
 }
 
+
+/**
+* Save form in forms tab
+*
+* @param    {Array}    formElements       Elements in the form
+* @example  {
+*              id: "72203b2c-3d98-4a5e-ae12-7bfb16371afc",
+*              checkbox: null,
+*              idb_id: "1af7ccbe-8dad-452d-a50c-fc48c3954e6b",
+*              radiobutton: null,
+*              textbox: "33",
+*              version: "1"
+*            }
+*/
 function saveFormsForm(formElements) {
 	const request = indexedDB.open(DB_NAME, VERSION);
 
@@ -122,10 +136,12 @@ function saveFormsForm(formElements) {
 		console.log("Successfully opened the database"); 
 		const db = e.target.result;
 		
+        //Open transaction for inserting data into stores
 		const transaction = db.transaction([F_FORMS_TABLE], 'readwrite');
 
 		const formsStore = transaction.objectStore(F_FORMS_TABLE);		
-			
+		
+        //Insert form data
 		for (let i=0; i<formElements.length; i++) {
 			formsStore.add(formElements[i]);
 		}
@@ -150,12 +166,19 @@ function saveFormsForm(formElements) {
 	}
 }
 
-
+/**
+* Search database for forms via form name
+*
+* @param    {String}   formName    Name of the form
+* @return   {Array}                Array of form elemenets (on success)
+*/
 function searchDatabaseForForms(formName) {
 	return new Promise(
 		function(resolve, reject) {
+            //Open database
 			const request = indexedDB.open(DB_NAME, VERSION);			
 
+            //On success open stores
 			request.onsuccess = function(e) {
 				console.log("Successfully opened the database"); 
 				const db = e.target.result;				
@@ -164,10 +187,13 @@ function searchDatabaseForForms(formName) {
 				
 				const formsStore = transaction.objectStore(FORMS_TABLE);
 
-				const elementsStore = transaction.objectStore(ELEMENTS_TABLE);				
+				const elementsStore = transaction.objectStore(ELEMENTS_TABLE);
+                
+                //Elements store is searched by index ELEMENTS_TABLE_INDEX (form name)
 				const formElementsRange = IDBKeyRange.only(formName);
 				const elementsStoreIndex = elementsStore.index(ELEMENTS_TABLE_INDEX);
 
+                //Element optins store is serached by index ELEMENT_OPTIONS_TABLE_INDEX (id of the element in form)
 				const elementOptionsStore = transaction.objectStore(ELEMENT_OPTIONS_TABLE);
 				const elementOptionsStoreIndex = elementOptionsStore.index(ELEMENT_OPTIONS_TABLE_INDEX);
 
@@ -177,11 +203,14 @@ function searchDatabaseForForms(formName) {
 					console.log("Successfuly opened forms");
 					const formResult = e.target.result;					
 
+                    //If there is form with given name get its element
 					if (formResult) {
 						var elements = elementsStoreIndex.openCursor(formElementsRange);
 
+                        //Array to store elements
 						var elementsArray = [];
 						
+                        //Open cursor on elements and check if element has options (is radio button element)
 						elements.onsuccess = function(e) {
 							var cursor = e.target.result;							
 			
@@ -191,7 +220,7 @@ function searchDatabaseForForms(formName) {
 								const elementOptions = elementOptionsStoreIndex.getAll(elementOptionsRange);
 
 								elementOptions.onsuccess = function(e) {
-									//what sorcery is this??
+									//what sorcery is this?? I can get value from async function without promise...
 									cursor.value.options = e.target.result;									
 								}
 								
@@ -199,6 +228,7 @@ function searchDatabaseForForms(formName) {
 									reject("Error searching element options:", e.target.error.message);
 								}
 
+                                //Add element to array together with its options
 								elementsArray.push(cursor.value);								
 
 								cursor.continue();
