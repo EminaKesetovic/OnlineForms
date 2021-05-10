@@ -166,19 +166,18 @@ function validateFromElement(formDiv) {
 			   }
 
 			break;
-		case NUMERIC_OPTION:
+		case NUMERIC_OPTION:			
 			switch (type){
-				case TEXTBOX_OPTION: 
+				case TEXTBOX_OPTION: 					
 					if (isNaN(inputs[0].value)) {
 						alert (label + " must be a number.");
 						valid = 0;
-					} 
-					break; 
-				default:
-					break;
-			   }
-		  
-			break;		
+					}
+					
+					break;				
+			}
+
+		break;
 	}
 
 	return valid;
@@ -236,7 +235,7 @@ function validateAndSaveFromsForm(e, searchFieldId, versionFieldId) {
 			var type = formDivs[i].getAttribute(TYPE_ATTRIBUTE);
 			var inputs = formDivs[i].getElementsByTagName("input");
 			
-			//Depending on type some values in object are goind to be empty and one of ceratin type is going to be populated 
+			//Depending on type some values in object are going to be empty and one of ceratin type is going to be populated 
 			switch (type){
 				case TEXTBOX_OPTION: 
 					newObject[TEXTBOX_OPTION] = inputs[0].value;
@@ -252,9 +251,9 @@ function validateAndSaveFromsForm(e, searchFieldId, versionFieldId) {
 					break;
 				case RADIOBUTTON_OPTION:
 					var options = [];					
-					for (var i=0; i<inputs.length; i++) {
-						if (inputs[i].checked) {							
-							options.push(inputs[i].value);
+					for (var j=0; j<inputs.length; j++) {
+						if (inputs[j].checked) {							
+							options.push(inputs[j].value);
 						}					
 					}
 					
@@ -262,7 +261,7 @@ function validateAndSaveFromsForm(e, searchFieldId, versionFieldId) {
 					newObject[CHECKBOX_OPTION] = null;
 					newObject[RADIOBUTTON_OPTION] = options;
 
-					break; 
+					break;				
 			}
 			
 			elements.push(newObject);
